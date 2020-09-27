@@ -8,8 +8,15 @@ const respostaHome = {
 
 module.exports = {
   async home(request, response) {
-    const produto = await connection('produto').select('*');
+    try {
+      const produto = await connection('produto').select('*');
+      return response.status(400).json(produto);
+    } catch (error) {
+      return response.status(201).json(error.message)
+    }
 
-    return response.status(400).json(produto);
+
+
+
   }
 }
