@@ -1,6 +1,7 @@
 const express = require('express');
 const { celebrate, Segments, Joi } = require('celebrate');
 
+const HomeController = require('./controllers/HomeController');
 const OngController = require('./controllers/OngController');
 const IncidentController = require('./controllers/IncidentController');
 const ProfileController = require('./controllers/ProfileController');
@@ -11,7 +12,7 @@ const routes = express.Router();
 
 routes.post('/sessions', SessionController.create)
 
-routes.get('/', OngController.index);
+routes.get('/', HomeController.home);
 routes.get('/ongs', OngController.index);
 
 routes.post('/ongs', celebrate({
