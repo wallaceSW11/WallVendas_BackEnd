@@ -1,0 +1,24 @@
+{
+  "name": "WallVendas_BackEnd",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wallaceSW11/WallVendas_BackEnd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wallaceSW11/WallVendas_BackEnd/issues"
+  },
+  "homepage": "https://github.com/wallaceSW11/WallVendas_BackEnd#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}
