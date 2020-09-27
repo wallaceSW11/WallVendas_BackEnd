@@ -1,8 +1,9 @@
 {
-  "name": "WallVendas_BackEnd",
+  "name": "wallvendas_backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +18,13 @@
   },
   "homepage": "https://github.com/wallaceSW11/WallVendas_BackEnd#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "celebrate": "^13.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "knex": "^0.21.5",
+    "router": "^1.3.5",
+    "sqlite": "^4.0.14",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {},
   "description": ""
