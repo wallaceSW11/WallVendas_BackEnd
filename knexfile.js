@@ -31,13 +31,13 @@ module.exports = {
       database: 'd6v2k843oh96ij',
       user: 'kzjjcojpbmretv',
       password: 'fd924c24b89b706b88ee9af0bbd27c48d70c1c9f517af29c691048ee6fba0a17',
-      ssl: true,
-      dialectOptions: {
-        "ssl": {
-          require: true,
-          rejectUnauthorized: true
-        }
-      }
+      // ssl: true,
+      // dialectOptions: {
+      //   "ssl": {
+      //     require: true,
+      //     rejectUnauthorized: true
+      //   }
+      // }
     },
     pool: {
       min: 2,
