@@ -8,7 +8,7 @@ const { route } = require('./app');
 const routes = express.Router();
 
 routes.get('/', HomeController.home);
-routes.get('/produto', ProdutoController.index);
+routes.get('/produtos', ProdutoController.listaProdutos);
 
 // const OngController = require('./controllers/OngController');
 // const IncidentController = require('./controllers/IncidentController');
