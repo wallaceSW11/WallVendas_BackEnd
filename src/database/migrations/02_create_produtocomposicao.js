@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  return knex.schema.createTable('produtocomposicao', function (table) {
+  return knex.schema.createTableIfNotExists('produtocomposicao', function (table) {
     table.increments('id');
     table.integer('idproduto').notNullable();
     table.integer('idprodutocomposicao').notNullable();

@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  return knex.schema.createTable('salario', function (table) {
+  return knex.schema.createTableIfNotExists('salario', function (table) {
     table.float('valorsalario').nullable();
     table.integer('totalhoraspordia').notNullable();
     table.integer('totaldiassemana').notNullable();
