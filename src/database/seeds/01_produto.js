@@ -17,6 +17,12 @@ exports.seed = function (knex) {
           codigo: 3,
           descricao: 'Folha Fotográfico 180g',
           valorprecovenda: 0.25
+        },
+        {
+          codigo: 4,
+          descricao: 'Topo de bolo pequeno',
+          valorprecovenda: 2,
+          possuicomposicao: true
         }
       ]);
     });

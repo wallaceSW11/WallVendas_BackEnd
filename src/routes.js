@@ -9,6 +9,9 @@ const routes = express.Router();
 
 routes.get('/', HomeController.home);
 routes.get('/produtos', ProdutoController.listaProdutos);
+routes.get('/produtodetalhe', ProdutoController.produtoDetalhe);
+
+routes.post('/produto', ProdutoController.create);
 
 // const OngController = require('./controllers/OngController');
 // const IncidentController = require('./controllers/IncidentController');

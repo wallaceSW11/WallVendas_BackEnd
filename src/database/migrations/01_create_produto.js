@@ -9,7 +9,7 @@ exports.up = function (knex) {
     table.float('valorfretecompra').nullable();
     table.float('acrescimodescontocompra').nullable();
     table.float('valorcustoreposicao').nullable();
-    table.float('datacompra').nullable();
+    table.date('datacompra').nullable();
     table.boolean('possuicomposicao').defaultTo(false);
     table.float('acrescimodescontovenda').nullable();
     table.float('valorprecovenda').nullable();
