@@ -18,8 +18,8 @@ module.exports = {
   async produtoDetalhe(request, response) {
     try {
       const produtoComposicao = await connection('produtocomposicao')
-        .select('*')
-        .where('idproduto', '=', '1');
+        .select('*');
+      //.where('idproduto', '=', '1');
 
       return response.json(produtoComposicao)
 
@@ -29,25 +29,33 @@ module.exports = {
   },
 
   async create(request, response) {
-
+    const { codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
 
     try {
 
-      const { codigo, descricao, valorprecovenda } = request.body;
-
-      connection('produto').insert({
+      const [id] = await connection('produto').insert({
         codigo,
         descricao,
         valorprecovenda
-      });
+      }, 'id');
 
-      return response.json({ messege: 'foi' });
+
+
+      try {
+        await connection('produtocomposicao').insert(produtocomposicao
+        );
+      }
+      catch (erro) {
+        return response.status(201).json({ message: 'não foi possível cadastrar o produto composto, mensagem original: ' + erro.message })
+      };
+
+      return response.json({ id: id });
 
     } catch (error) {
       return response.status(201).json({ message: 'não foi possível cadastrar o produto, mensagem original: ' + error.message })
     }
 
-  }
+  },
 
 
 }
