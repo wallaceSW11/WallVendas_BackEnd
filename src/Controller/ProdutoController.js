@@ -31,6 +31,7 @@ module.exports = {
   async create(request, response) {
     const { codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
 
+
     try {
 
       const [id] = await connection('produto').insert({
@@ -39,11 +40,15 @@ module.exports = {
         valorprecovenda
       }, 'id');
 
-
+      const produtodetalhe = produtocomposicao.map(itens => {
+        return {
+          'idproduto': id,
+          ...itens
+        }
+      });
 
       try {
-        await connection('produtocomposicao').insert(produtocomposicao
-        );
+        await connection('produtocomposicao').insert(produtodetalhe);
       }
       catch (erro) {
         return response.status(201).json({ message: 'não foi possível cadastrar o produto composto, mensagem original: ' + erro.message })
