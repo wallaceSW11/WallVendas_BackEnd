@@ -17,20 +17,25 @@ module.exports = {
 
   async produtoDetalhe(request, response) {
     try {
-      const produtoComposicao = await connection('produtocomposicao')
-        .select('*');
-      //.where('idproduto', '=', '1');
+      const { idproduto } = request.query;
 
-      return response.json(produtoComposicao)
+      const produtoComposicao = await connection('produtocomposicao')
+        .where('idproduto', '=', idproduto)
+        .select('*');
+
+      const produto = await connection('produto')
+        .where('id', '=', idproduto)
+        .select('*');
+
+      return response.json({ produto, produtoComposicao });
 
     } catch (error) {
-      return response.status(201).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
+      return response.status(400).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
     }
   },
 
   async create(request, response) {
     const { codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
-
 
     try {
 
