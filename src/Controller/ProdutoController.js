@@ -1,17 +1,17 @@
 const connection = require('../database/connection');
 
 module.exports = {
-  async listaProdutos(request, response) {
+  async produtos(request, response) {
 
     try {
       const produto = await connection('produto')
-        .select('codigo', 'descricao', 'valorprecovenda')
+        .select('id', 'codigo', 'descricao', 'valorprecovenda')
         .orderBy('descricao');
 
       return response.json(produto);
 
     } catch (error) {
-      return response.status(201).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
+      return response.status(400).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
     }
   },
 
@@ -25,7 +25,8 @@ module.exports = {
 
       const produto = await connection('produto')
         .where('id', '=', idproduto)
-        .select('*');
+        .select('*')
+        .first();
 
       return response.json({ produto, produtoComposicao });
 
@@ -34,12 +35,14 @@ module.exports = {
     }
   },
 
-  async create(request, response) {
+  async novoCadastro(request, response) {
     const { codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
+
+    const tran = await connection.transaction();
 
     try {
 
-      const [id] = await connection('produto').insert({
+      const [id] = await tran('produto').insert({
         codigo,
         descricao,
         valorprecovenda
@@ -52,17 +55,58 @@ module.exports = {
         }
       });
 
-      try {
-        await connection('produtocomposicao').insert(produtodetalhe);
-      }
-      catch (erro) {
-        return response.status(201).json({ message: 'não foi possível cadastrar o produto composto, mensagem original: ' + erro.message })
-      };
+      await tran('produtocomposicao').insert(produtodetalhe);
+
+      tran.commit();
 
       return response.json({ id: id });
 
     } catch (error) {
-      return response.status(201).json({ message: 'não foi possível cadastrar o produto, mensagem original: ' + error.message })
+
+      tran.rollback();
+      return response.status(400).json({ message: 'não foi possível cadastrar o produto, mensagem original: ' + error.message })
+
+    }
+  },
+
+  async atualizarCadastro(request, response) {
+    const { id, codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
+
+    const tran = await connection.transaction();
+
+    try {
+
+      await tran('produto')
+        .where('id', '=', id)
+        .update({
+          codigo,
+          descricao,
+          valorprecovenda
+        });
+
+      await tran('produtocomposicao')
+        .where('idproduto', '=', id)
+        .delete();
+
+      const produtodetalhe = produtocomposicao.map(itens => {
+        return {
+          'idproduto': id,
+          ...itens
+        }
+      });
+
+      await tran('produtocomposicao').insert(produtodetalhe);
+
+      tran.commit();
+
+      return response.json({ id: id });
+
+    } catch (error) {
+
+      tran.rollback();
+      return response.status(400).json(
+        { message: 'não foi possível atualizar o cadastrar o produto, mensagem original: ' + error.message })
+
     }
 
   },
