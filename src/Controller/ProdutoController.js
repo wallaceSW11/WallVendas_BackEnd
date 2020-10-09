@@ -36,7 +36,7 @@ module.exports = {
   },
 
   async novoCadastro(request, response) {
-    const { codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
+    const { codigo, descricao, valorprecovenda, possuicomposicao, produtocomposicao } = request.body;
 
     const tran = await connection.transaction();
 
@@ -48,14 +48,17 @@ module.exports = {
         valorprecovenda
       }, 'id');
 
-      const produtodetalhe = produtocomposicao.map(itens => {
-        return {
-          'idproduto': id,
-          ...itens
-        }
-      });
+      if (possuicomposicao) {
 
-      await tran('produtocomposicao').insert(produtodetalhe);
+        const produtodetalhe = produtocomposicao.map(itens => {
+          return {
+            'idproduto': id,
+            ...itens
+          }
+        });
+
+        await tran('produtocomposicao').insert(produtodetalhe);
+      }
 
       tran.commit();
 
