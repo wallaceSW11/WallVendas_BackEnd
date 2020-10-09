@@ -64,6 +64,7 @@ module.exports = {
     } catch (error) {
 
       tran.rollback();
+
       return response.status(400).json({ message: 'não foi possível cadastrar o produto, mensagem original: ' + error.message })
 
     }
