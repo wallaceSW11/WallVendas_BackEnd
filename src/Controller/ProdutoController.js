@@ -74,7 +74,7 @@ module.exports = {
   },
 
   async atualizarCadastro(request, response) {
-    const { id, codigo, descricao, valorprecovenda, produtocomposicao } = request.body;
+    const { id, codigo, descricao, valorprecovenda, possuicomposicao, produtocomposicao } = request.body;
 
     const tran = await connection.transaction();
 
@@ -88,19 +88,20 @@ module.exports = {
           valorprecovenda
         });
 
-      await tran('produtocomposicao')
-        .where('idproduto', '=', id)
-        .delete();
+      if (possuicomposicao) {
+        await tran('produtocomposicao')
+          .where('idproduto', '=', id)
+          .delete();
 
-      const produtodetalhe = produtocomposicao.map(itens => {
-        return {
-          'idproduto': id,
-          ...itens
-        }
-      });
+        const produtodetalhe = produtocomposicao.map(itens => {
+          return {
+            'idproduto': id,
+            ...itens
+          }
+        });
 
-      await tran('produtocomposicao').insert(produtodetalhe);
-
+        await tran('produtocomposicao').insert(produtodetalhe);
+      }
       tran.commit();
 
       return response.json({ id: id });
