@@ -8,11 +8,11 @@ const { route } = require('./app');
 const routes = express.Router();
 
 routes.get('/', HomeController.home);
-routes.get('/produtos', ProdutoController.produtos);
-routes.get('/produtodetalhe', ProdutoController.produtoDetalhe);
 
-routes.post('/produto', ProdutoController.novoCadastro);
-routes.put('/produto', ProdutoController.atualizarCadastro);
+routes.get('/produto/consultar', ProdutoController.consulta);
+routes.post('/produto/cadastrar', ProdutoController.novoCadastro);
+routes.put('/produto/editar', ProdutoController.atualizarCadastro);
+// routes.get('/produto/excluir', ProdutoController.produtoDetalhe);
 
 
 module.exports = routes;

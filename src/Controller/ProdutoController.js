@@ -1,76 +1,36 @@
+const { response } = require('express');
 const connection = require('../database/connection');
 
+const produtoDAO = require('../DAO/produtoDAO');
+
 module.exports = {
-  async produtos(request, response) {
+  async consulta(request, response) {
+    const { idproduto } = request.query;
 
     try {
-      const produto = await connection('produto')
-        .select('id', 'codigo', 'descricao', 'valorprecovenda')
-        .orderBy('descricao');
-
-      return response.json(produto);
-
+      if (idproduto) {
+        const produto = await produtoDAO.consultaProdutoPorId(idproduto);
+        const produtoCoposicao = await produtoDAO.consultaProdutoComposicaoPorId(idproduto);
+        const resposta = { produto, produtoCoposicao };
+        return response.json(resposta);
+      } else {
+        return response.json(await consultaProduto());
+      }
     } catch (error) {
-      return response.status(400).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
-    }
-  },
-
-  async produtoDetalhe(request, response) {
-    try {
-      const { idproduto } = request.query;
-
-      const produtoComposicao = await connection('produtocomposicao')
-        .where('idproduto', '=', idproduto)
-        .select('*');
-
-      const produto = await connection('produto')
-        .where('id', '=', idproduto)
-        .select('*')
-        .first();
-
-      return response.json({ produto, produtoComposicao });
-
-    } catch (error) {
-      return response.status(400).json({ message: 'não foi possível realizar a consulta, mensagem original: ' + error.message })
+      return response.status(400).json({ erro: 'falha na consulta de produtos.', message: error.message });
     }
   },
 
   async novoCadastro(request, response) {
-    const { codigo, descricao, valorprecovenda, possuicomposicao, produtocomposicao } = request.body;
 
-    const tran = await connection.transaction();
-
-    try {
-
-      const [id] = await tran('produto').insert({
-        codigo,
-        descricao,
-        valorprecovenda
-      }, 'id');
-
-      if (possuicomposicao) {
-
-        const produtodetalhe = produtocomposicao.map(itens => {
-          return {
-            'idproduto': id,
-            ...itens
-          }
-        });
-
-        await tran('produtocomposicao').insert(produtodetalhe);
+    produtoDAO.cadastrarProduto(request.body).then(idProdutoCadastrado => {
+      if (!Number.isInteger(idProdutoCadastrado)) {
+        return response.status(400).json({ erro: 'Falha ao cadastrar produto', message: idProdutoCadastrado });
+      } else {
+        return response.status(200).json({ id: idProdutoCadastrado });
       }
+    })
 
-      tran.commit();
-
-      return response.json({ id: id });
-
-    } catch (error) {
-
-      tran.rollback();
-
-      return response.status(400).json({ message: 'não foi possível cadastrar o produto, mensagem original: ' + error.message })
-
-    }
   },
 
   async atualizarCadastro(request, response) {
