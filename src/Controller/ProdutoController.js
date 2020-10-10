@@ -14,7 +14,7 @@ module.exports = {
         const resposta = { produto, produtoCoposicao };
         return response.json(resposta);
       } else {
-        return response.json(await consultaProduto());
+        return response.json(await produtoDAO.consultaProduto());
       }
     } catch (error) {
       return response.status(400).json({ erro: 'falha na consulta de produtos.', message: error.message });
